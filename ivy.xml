@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  ~ Copyright (c) 2011. Elad Kehat.
+  ~ This software is provided under the MIT License:
+  ~ http://www.opensource.org/licenses/mit-license.php
+  -->
+<ivy-module version="2.0">
+    <info organisation="eladkehat" module="Couch-RQS" status="release">
+        <license name="MIT" url="http://www.opensource.org/licenses/mit-license.php"/>
+    </info>
+    <dependencies>
+        <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.1.1" transitive="false" conf="*->*,!sources,!javadoc" />
+        <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.1.1" transitive="false" conf="*->*,!sources,!javadoc" />
+        <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.5.1" transitive="false" conf="*->*,!sources,!javadoc" />
+        <dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="1.5.1" transitive="false" conf="*->*,!sources,!javadoc" />
+
+        <dependency org="ch.qos.logback" name="logback-classic" rev="0.9.21" transitive="false" conf="*->*,!sources,!javadoc" />
+        <dependency org="ch.qos.logback" name="logback-core" rev="0.9.21" transitive="false" conf="*->*,!sources,!javadoc" />
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.0" transitive="false" conf="*->*,!sources,!javadoc" />
+        <dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.6.0" transitive="false" conf="*->*,!sources,!javadoc" />
+        
+        <dependency org="junit" name="junit" rev="4.8.2" conf="*->*,!sources,!javadoc" />
+
+        <dependency org="eladkehat" name="JZBoy" rev="0.3.0" transitive="false" />
+    </dependencies>
+    
+</ivy-module>

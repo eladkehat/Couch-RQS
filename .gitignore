@@ -1,0 +1,20 @@
+# Library dependencies
+lib/*
+# Compiled classes and other build-generated files
+build/*
+out/*
+# Temporary dir
+tmp/*
+
+# IDE project files
+.project
+.classpath
+nbproject/*
+.idea/*
+*.iml
+
+# JavaDocs
+doc/*
+
+# JUnit reports
+test-reports/*

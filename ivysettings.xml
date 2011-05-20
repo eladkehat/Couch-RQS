@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  ~ Copyright (c) 2011. Elad Kehat.
+  ~ This software is provided under the MIT License:
+  ~ http://www.opensource.org/licenses/mit-license.php
+  -->
+<ivysettings>
+    <settings defaultResolver="central"/>
+    <resolvers>
+        <ibiblio name="central" m2compatible="true"/>
+        <url name="jzboy-github">
+            <artifact pattern="http://cloud.github.com/downloads/eladkehat/JZBoy/jzboy-[revision].[ext]" />
+        </url>
+    </resolvers>
+    <modules>
+        <module organisation="eladkehat" name="JZBoy" resolver="jzboy-github"/>
+    </modules>
+</ivysettings>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project name="Couch-RQS Tests" basedir=".">
+    <!-- Contains ant tasks that run individual tests. Useful when you don't want to run the entire suite. -->
+    <import file="build.xml"/>
+
+    <target name="test.QueueService" depends="build.tests">
+        <junit fork="yes" haltonfailure="yes">
+            <classpath refid="classpath.test" />
+            <classpath>
+                <pathelement location="${build.dir}/tests" />
+            </classpath>
+            <test name="com.rqs.QueueServiceTest" />
+            <formatter type="plain" usefile="false" />
+        </junit>
+    </target>
+
+    <target name="test.Queue" depends="build.tests">
+        <junit fork="yes" haltonfailure="yes">
+            <classpath refid="classpath.test" />
+            <classpath>
+                <pathelement location="${build.dir}/tests" />
+            </classpath>
+            <test name="com.rqs.QueueTest" />
+            <formatter type="plain" usefile="false" />
+        </junit>
+    </target>
+
+</project>

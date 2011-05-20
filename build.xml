@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project name="Couch-RQS" default="build.jar" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <property name="src.dir" location="src" />
+    <property name="test.dir" location="test" />
+    <property name="lib.dir" location="lib" />
+    <property name="doc.dir" location="doc" />
+    <property name="build.dir" location="build" />
+    <property name="product.name" value="couch-rqs" />
+    <property name="version.number" value="0.2" />
+    <property name="jar.name" value="${product.name}-${version.number}.jar" />
+    <property name="dist.package.name" value="${product.name}-${version.number}" />
+
+    <target name="resolve" description="retrieve dependencies with ivy">
+        <ivy:retrieve />
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.dir}" quiet="true"/>
+    </target>
+
+    <path id="classpath.build">
+        <pathelement location="${lib.dir}/httpclient-4.1.1.jar"/>
+        <pathelement location="${lib.dir}/httpcore-4.1.1.jar"/>
+        <pathelement location="${lib.dir}/jackson-core-asl-1.5.1.jar"/>
+        <pathelement location="${lib.dir}/jackson-mapper-asl-1.5.1.jar"/>
+        <pathelement location="${lib.dir}/jzboy-0.3.0.jar"/>
+        <pathelement location="${lib.dir}/logback-classic-0.9.21.jar"/>
+        <pathelement location="${lib.dir}/logback-core-0.9.21.jar"/>
+        <pathelement location="${lib.dir}/slf4j-api-1.6.0.jar"/>
+    </path>
+
+    <target name="build.classes" depends="resolve">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.dir}/classes"/>
+        <javac srcdir="${src.dir}"
+               destdir="${build.dir}/classes"
+               includes="**/*.java"
+               deprecation="off"
+               debug="on"
+               source="1.6"
+               includeantruntime="false">
+            <classpath refid="classpath.build" />
+        </javac>
+    </target>
+
+    <target name="build.jar" depends="build.classes">
+        <mkdir dir="${build.dir}/jar"/>
+        <!-- Use this to include the lib jars in our own jar
+        <unjar src="${lib.dir}/jzboy-0.3.0.jar" dest="${build.dir}/jar"/>
+		etc.
+        -->
+        <copy todir="${build.dir}/jar">
+            <fileset dir="${build.dir}/classes" 
+					 includes="**/*.class" />
+        </copy>
+        <jar destfile="${build.dir}/${jar.name}" basedir="${build.dir}/jar" />
+    </target>
+
+    <path id="classpath.test">
+        <pathelement location="${lib.dir}/httpclient-4.1.1.jar"/>
+        <pathelement location="${lib.dir}/httpcore-4.1.1.jar"/>
+        <pathelement location="${lib.dir}/jackson-core-asl-1.5.1.jar"/>
+        <pathelement location="${lib.dir}/jackson-mapper-asl-1.5.1.jar"/>
+        <pathelement location="${lib.dir}/jzboy-0.3.0.jar"/>
+        <pathelement location="${lib.dir}/logback-classic-0.9.21.jar"/>
+        <pathelement location="${lib.dir}/logback-core-0.9.21.jar"/>
+        <pathelement location="${lib.dir}/slf4j-api-1.6.0.jar"/>
+        <pathelement location="${build.dir}/${jar.name}"/>
+        <pathelement location="${lib.dir}/junit-4.8.2.jar"/>
+        <pathelement location="${lib.dir}/jcl-over-slf4j-1.6.0.jar"/>
+    </path>
+
+    <target name="build.tests" depends="build.jar">
+        <mkdir dir="${build.dir}/tests"/>
+        <javac srcdir="${test.dir}"
+               destdir="${build.dir}/tests"
+               includes="**/*.java"
+               deprecation="off"
+               debug="on"
+               source="1.6">
+            <classpath refid="classpath.test" />
+        </javac>
+    </target>
+
+    <target name="build.all" depends="build.jar, build.tests">
+    </target>
+
+    <target name="test" depends="build.tests">
+        <mkdir dir="tmp/rawtestoutput"/>
+        <junit fork="yes" printsummary="true" failureproperty="junit.failure">
+            <classpath refid="classpath.test" />
+            <classpath>
+                <pathelement location="${build.dir}/tests" />
+            </classpath>
+            <formatter type="plain" usefile="false" />
+            <batchtest todir="tmp/rawtestoutput">
+                <fileset dir="${build.dir}/tests" includes="**/*Test.class" />
+                <formatter type="xml" />
+            </batchtest>
+        </junit>
+        <junitreport todir="tmp">
+            <fileset dir="tmp/rawtestoutput"/>
+            <report todir="test-reports"/>
+        </junitreport>
+        <fail if="junit.failure" message="Unit test(s) failed. See reports!"/>
+    </target>
+
+    <target name="javadoc" depends="build.all">
+        <delete dir="${doc.dir}" quiet="true"/>
+        <javadoc sourcepath="${src.dir}"
+                 destdir="${doc.dir}"
+                 classpathref="classpath.test"
+                 author="true"
+                 version="true"
+                 use="true"
+                 windowtitle="Couch-RQS API"
+                 linksource="yes">
+         </javadoc>
+    </target>
+
+    <target name="dist.src" depends="build.all, javadoc">
+        <mkdir dir="${build.dir}/${dist.package.name}"/>
+        <copy file="${build.dir}/${jar.name}" todir="${build.dir}/${dist.package.name}"/>
+        <copy todir="${build.dir}/${dist.package.name}">
+            <fileset dir=".">
+                <include name="LICENSE"/>
+                <include name="build.xml"/>
+                <include name="doc/**/*"/>
+                <include name="lib/**/*"/>
+                <include name="src/**/*"/>
+                <include name="test/**/*"/>
+            </fileset>
+        </copy>
+		<tar destfile="${build.dir}/${dist.package.name}-src.tar.gz"
+		     basedir="${build.dir}"
+			 includes="${dist.package.name}/**/*"
+			 compression="gzip"	/>
+        <zip destfile="${build.dir}/${dist.package.name}-src.zip"
+		     basedir="${build.dir}"
+			 includes="${dist.package.name}/**/*" />
+    </target>
+
+    <target name="dist.bin" depends="build.jar">
+        <mkdir dir="${build.dir}/${dist.package.name}"/>
+		<tar destfile="${build.dir}/${dist.package.name}-bin.tar.gz" compression="gzip">
+            <fileset dir="." includes="LICENSE"/>
+            <fileset dir="${build.dir}" includes="${jar.name}"/>
+        </tar>
+        <zip destfile="${build.dir}/${dist.package.name}-bin.zip">
+            <fileset dir="." includes="LICENSE"/>
+            <fileset dir="${build.dir}" includes="${jar.name}"/>
+        </zip>
+    </target>
+
+    <target name="dist.bin-with-deps" depends="build.jar">
+        <mkdir dir="${build.dir}/${dist.package.name}"/>
+        <mkdir dir="${build.dir}/${dist.package.name}/lib"/>
+        <copy todir="${build.dir}/${dist.package.name}/lib">
+            <fileset dir="${lib.dir}" includes="*.jar"/>
+        </copy>
+		<tar destfile="${build.dir}/${dist.package.name}-bin-with-deps.tar.gz" compression="gzip">
+            <fileset dir="." includes="LICENSE"/>
+            <fileset dir="${build.dir}" includes="${jar.name}"/>
+            <tarfileset dir="${lib.dir}" prefix="lib"
+                        includes="jzboy-0.3.0.jar httpclient-4.1.1.jar httpcore-4.1.1.jar jackson-core-asl-1.5.1.jar jackson-mapper-asl-1.5.1.jar slf4j-api-1.6.0.jar"
+                        />
+        </tar>
+        <zip destfile="${build.dir}/${dist.package.name}-bin-with-deps.zip">
+            <fileset dir="." includes="LICENSE"/>
+            <fileset dir="${build.dir}" includes="${jar.name}"/>
+            <zipfileset dir="${lib.dir}" prefix="lib"
+                        includes="jzboy-0.3.0 httpclient-4.1.1.jar httpcore-4.1.1.jar jackson-core-asl-1.5.1.jar jackson-mapper-asl-1.5.1.jar slf4j-api-1.6.0.jar"
+                        />
+        </zip>
+    </target>
+
+    <target name="dist.javadoc" depends="javadoc">
+        <mkdir dir="${build.dir}/${dist.package.name}"/>
+        <copy todir="${build.dir}/${dist.package.name}">
+            <fileset dir=".">
+                <include name="LICENSE"/>
+                <include name="doc/**/*"/>
+            </fileset>
+        </copy>
+		<tar destfile="${build.dir}/${dist.package.name}-docs.tar.gz" compression="gzip">
+            <fileset dir="." includes="LICENSE"/>
+            <tarfileset dir="${doc.dir}" prefix="doc" includes="**/*"/>
+        </tar>
+        <zip destfile="${build.dir}/${dist.package.name}-docs.zip">
+            <fileset dir="." includes="LICENSE"/>
+            <zipfileset dir="${doc.dir}" prefix="doc" includes="**/*"/>
+        </zip>
+    </target>
+
+    <target name="dist.all" depends="dist.src, dist.javadoc, dist.bin, dist.bin-with-deps">
+    </target>
+
+</project>
