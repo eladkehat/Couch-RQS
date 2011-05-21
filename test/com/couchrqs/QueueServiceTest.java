@@ -48,7 +48,7 @@ public class QueueServiceTest {
 
 	@Test
 	public void testCreateQueue() throws Exception {
-		final String newQueueName = "queueservicetest-createqueue" + System.currentTimeMillis();
+		final String newQueueName = "rqs_queueservicetest_createqueue" + System.currentTimeMillis();
 		assertFalse("Supposedly non-existant queue already exists!",
 				new Database(instance.couchDB, newQueueName).exists());
 		try {
@@ -106,7 +106,7 @@ public class QueueServiceTest {
 
 	@Test
 	public void testListQueues() throws Exception {
-		final String queue2Name = "queueservicetest-listqueues2" + System.currentTimeMillis();
+		final String queue2Name = "rqs_queueservicetest_listqueues2" + System.currentTimeMillis();
 		try {
 			instance.createQueue(queue2Name);
 
@@ -125,7 +125,7 @@ public class QueueServiceTest {
 		assertEquals(queue.getName(), queue2.getName());
 		assertEquals(queue.getProcessId(), queue2.getProcessId());
 
-		final String newQueueName = "queueservicetest-getorcreatequeue" + System.currentTimeMillis();
+		final String newQueueName = "rqs_queueservicetest_getorcreatequeue" + System.currentTimeMillis();
 		assertFalse("Supposedly non-existant queue already exists!",
 				new Database(instance.couchDB, newQueueName).exists());
 		try {
