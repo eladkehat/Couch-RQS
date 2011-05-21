@@ -78,7 +78,8 @@
                includes="**/*.java"
                deprecation="off"
                debug="on"
-               source="1.6">
+               source="1.6"
+               includeantruntime="false">
             <classpath refid="classpath.test" />
         </javac>
     </target>
