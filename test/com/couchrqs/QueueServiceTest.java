@@ -48,8 +48,8 @@ public class QueueServiceTest {
 
 	@Test
 	public void testCreateQueue() throws Exception {
-		final String newQueueName = "rqs_queueservicetest_createqueue" + System.currentTimeMillis();
-		assertFalse("Supposedly non-existant queue already exists!",
+		final String newQueueName = "rqs_queueservicetest_createqueue_" + System.currentTimeMillis();
+		assertFalse("Supposedly non-existent queue already exists!",
 				new Database(instance.couchDB, newQueueName).exists());
 		try {
 			Queue newQueue = instance.createQueue(newQueueName);
@@ -68,7 +68,7 @@ public class QueueServiceTest {
 
 	@Test
 	public void testIsQueue() throws Exception {
-		assertFalse("Non-existant queue should respond 'false' to isQueue", instance.isQueue(nonExistingQueue));
+		assertFalse("Non-existent queue should respond 'false' to isQueue", instance.isQueue(nonExistingQueue));
 		assertTrue("Initialized queue should respond 'true' to isQueue", instance.isQueue(queueName));
 		assertFalse("Non-queue database should respond 'false' to isQueue", instance.isQueue(nonQueueName));
 	}
@@ -77,7 +77,7 @@ public class QueueServiceTest {
 	public void testGetQueue() throws Exception {
 		try {
 			instance.getQueue(nonExistingQueue);
-			fail("getQueue on non-existant queue should throw a NoSuchQueueException");
+			fail("getQueue on non-existent queue should throw a NoSuchQueueException");
 		} catch (NoSuchQueueException nsqe) { }
 
 		Queue queue2 = instance.getQueue(queueName);
@@ -88,14 +88,14 @@ public class QueueServiceTest {
 	@Test
 	public void testDeleteQueue() throws Exception {
 		Database db = new Database(instance.couchDB, nonExistingQueue);
-		assertFalse("Supposedly non-existant queue already exists!", db.exists());
-		assertFalse("deleteQueue should return 'false' on non-existant queue", instance.deleteQueue(nonExistingQueue));
+		assertFalse("Supposedly non-existent queue already exists!", db.exists());
+		assertFalse("deleteQueue should return 'false' on non-existent queue", instance.deleteQueue(nonExistingQueue));
 
 		assertFalse("deleteQueue should return 'false' on non-queue database", instance.deleteQueue(nonQueueName));
 
 		final String delQueueName = "queue-service-test" + System.currentTimeMillis();
 		db = new Database(instance.couchDB, delQueueName);
-		assertFalse("Supposedly non-existant queue already exists!", db.exists());
+		assertFalse("Supposedly non-existent queue already exists!", db.exists());
 		instance.createQueue(delQueueName);
 		assertTrue("Newly created queue doesn't exist", db.exists());
 		Thread.sleep(250);
@@ -106,7 +106,7 @@ public class QueueServiceTest {
 
 	@Test
 	public void testListQueues() throws Exception {
-		final String queue2Name = "rqs_queueservicetest_listqueues2" + System.currentTimeMillis();
+		final String queue2Name = "rqs_queueservicetest_listqueues2_" + System.currentTimeMillis();
 		try {
 			instance.createQueue(queue2Name);
 
@@ -125,8 +125,8 @@ public class QueueServiceTest {
 		assertEquals(queue.getName(), queue2.getName());
 		assertEquals(queue.getProcessId(), queue2.getProcessId());
 
-		final String newQueueName = "rqs_queueservicetest_getorcreatequeue" + System.currentTimeMillis();
-		assertFalse("Supposedly non-existant queue already exists!",
+		final String newQueueName = "rqs_queueservicetest_getorcreatequeue_" + System.currentTimeMillis();
+		assertFalse("Supposedly non-existent queue already exists!",
 				new Database(instance.couchDB, newQueueName).exists());
 		try {
 			Queue newQueue = instance.createQueue(newQueueName);

@@ -12,6 +12,7 @@ import com.jzboy.couchdb.Server;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.regex.Pattern;
 
 /**
  * This class provides methods for manipulating queues.
@@ -63,7 +64,7 @@ public class QueueService {
 	 */
 	public Queue createQueue(String queueName) throws QueueNameAlreadyTakenException, RQSException {
 		if (!isNameAvailable(queueName))
-			throw new QueueNameAlreadyTakenException("Database already exists: " + queueName);
+			throw new QueueNameAlreadyTakenException("Database already exists, or name is invalid: " + queueName);
 		Queue queue = new Queue(couchDB, queueName);
 		initQueue(queue);
 		return queue;
@@ -98,11 +99,22 @@ public class QueueService {
 		}
 	}
 
+    /**
+     * Check whether the proposed queue name matches Couch's naming requirements:
+     * Only lowercase characters (a-z), digits (0-9), and any of the characters _, $, (, ), +, -, and /
+     * Must begin with a letter.
+     */
+    private boolean isNameValid(String queueName) {
+        return Pattern.matches("^[a-z][a-z0-9_\\$\\(\\)\\+\\-\\/]*$", queueName);
+    }
+
 	/**
 	 * Check if <code>queueName</code> can be used to create a new queue.
 	 * @return true iff there exists no database on the CoudhDB server with this name
 	 */
 	private boolean isNameAvailable(String queueName) throws RQSException {
+        if (!isNameValid(queueName))
+            return false;
 		try {
 			Database db = new Database(this.couchDB, queueName);
 			return !db.exists();
@@ -119,6 +131,8 @@ public class QueueService {
 	 * @throws RQSException	wraps any exception thrown by the underlying CouchDB layer
 	 */
 	public boolean isQueue(String queueName) throws RQSException {
+        if (!isNameValid(queueName))
+            return false;
 		if (isNameAvailable(queueName))
 			return false;
 		Database db = new Database(this.couchDB, queueName);
