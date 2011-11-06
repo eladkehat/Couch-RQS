@@ -51,6 +51,11 @@ data across the network using CouchDB's replication mechanism.
 * Unlike SQS, it's open source and completely free.
 
 
+Limitations
+-----------
+
+* Couch-RQS cannot run safely in a distributed / replicated environment.
 Check out the wiki pages to learn more
+
 
 [0]: http://aws.amazon.com/sqs/
