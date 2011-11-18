@@ -19,7 +19,7 @@ Like SQS, RQS lets components of your application communicate through a queue
 buffer that is accessible through HTTP. However, RQS trades-off SQS' high
 availability guarantee for real queue functionality (see the wiki pages for
 a detailed comparison).
-Also, RQS is complete free and runs on your own infrastructure - completely
+Also, RQS is completely free and runs on your own infrastructure - completely
 under your control.
 
 
@@ -30,8 +30,8 @@ Key Features
 application can access it from multiple locations - just run a CouchDB instance
 on a machine that is accessible to the rest of your applications.
 * Guaranteed message delivery: dequeued messages remain in the queue, hidden,
-until deleted by the acquiring process. If that process crushes before it
-finished processing the message, the message will appear again after a preset
+until deleted by the acquiring process. If that process crashes before it
+finishes processing the message, the message will appear again after a preset
 timeout period, to be consumed by another process.
 * Supports FIFO/LIFO functionality. Messages are guaranteed to be consumed in
 sequence.
